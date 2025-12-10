@@ -67,3 +67,54 @@ int main(){
     return 0;
 }
 
+void initBoard(){
+    char angka = '1';
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            board[i][j] = angka++;
+        }
+    }
+}
+
+void drawBoard(){
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            if(i == cursorY && j == cursorX)
+                attron(A_REVERSE);
+
+            mvprintw(4 + i, 4 + j * 4, " %c ", board[i][j]);
+
+            if(i == cursorY && j == cursorX)
+                attroff(A_REVERSE);
+        }
+    }
+}
+
+bool makeMove(){
+    int ch = getch();
+
+    switch(ch){
+        case KEY_UP:
+            if(cursorY > 0) cursorY--;
+            break;
+        case KEY_DOWN:
+            if(cursorY < 2) cursorY++;
+            break;
+        case KEY_LEFT:
+            if(cursorX > 0) cursorX--;
+            break;
+        case KEY_RIGHT:
+            if(cursorX < 2) cursorX++;
+            break;
+        case 10:  
+            if(board[cursorY][cursorX] != 'X' && board[cursorY][cursorX] != 'O'){
+                board[cursorY][cursorX] = (turn == 1) ? 'X' : 'O';
+                turn = (turn == 1 ? 2 : 1);
+            }
+            break;
+        case 'q':
+        case 'Q':
+            return false;
+    }
+    return true;
+}
