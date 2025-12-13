@@ -67,18 +67,24 @@ int main(){
     return 0;
 }
 
-void initBoard(){
+void initBoard()
+{
     char angka = '1';
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
             board[i][j] = angka++;
         }
     }
 }
 
-void drawBoard(){
-    for(int i = 0; i < 3; i++){
-        for(int j = 0; j < 3; j++){
+void drawBoard()
+{
+    for(int i = 0; i < 3; i++)
+    {
+        for(int j = 0; j < 3; j++)
+        {
             if(i == cursorY && j == cursorX)
                 attron(A_REVERSE);
 
@@ -90,10 +96,12 @@ void drawBoard(){
     }
 }
 
-bool makeMove(){
+bool makeMove()
+{
     int ch = getch();
 
-    switch(ch){
+    switch(ch)
+    {
         case KEY_UP:
             if(cursorY > 0) cursorY--;
             break;
@@ -107,7 +115,8 @@ bool makeMove(){
             if(cursorX < 2) cursorX++;
             break;
         case 10:  
-            if(board[cursorY][cursorX] != 'X' && board[cursorY][cursorX] != 'O'){
+            if(board[cursorY][cursorX] != 'X' && board[cursorY][cursorX] != 'O')
+            {
                 board[cursorY][cursorX] = (turn == 1) ? 'X' : 'O';
                 turn = (turn == 1 ? 2 : 1);
             }
@@ -117,4 +126,43 @@ bool makeMove(){
             return false;
     }
     return true;
+}
+
+int checkWinner()
+{
+    for(int i = 0; i < 3; i++)
+    {
+        if(board[i][0] == board[i][1] && board[i][1] == board[i][2])
+            return (board[i][0] == 'X') ? 1 : 2;
+
+        if(board[0][i] == board[1][i] && board[1][i] == board[2][i])
+            return (board[0][i] == 'X') ? 1 : 2;
+    }
+
+
+    if(board[0][0] == board[1][1] && board[1][1] == board[2][2])
+        return (board[0][0] == 'X') ? 1 : 2;
+
+    if(board[0][2] == board[1][1] && board[1][1] == board[2][0])
+        return (board[0][2] == 'X') ? 1 : 2;
+
+   
+    for(int i = 0; i < 3; i++)
+        for(int j = 0; j < 3; j++)
+            if(board[i][j] != 'X' && board[i][j] != 'O')
+                return 0;
+
+    return 3;  
+}
+
+void saveScore(int winner)
+{
+    ofstream file("score.txt", ios::app);
+    if(!file) return;
+
+    if(winner == 1) file << "Pemenang : X" << endl;
+    else if(winner == 2) file << "Pemenang : O" << endl;
+    else file << "Hasil : Seri" << endl;
+
+    file.close();
 }
